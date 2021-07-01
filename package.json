@@ -1,0 +1,22 @@
+{
+  "name": "training-binary-mask-detection",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scriptExtratorDeImagens.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joannisbs/training-binary-mask-detection-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joannisbs/training-binary-mask-detection-js/issues"
+  },
+  "homepage": "https://github.com/joannisbs/training-binary-mask-detection-js#readme",
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
+}
