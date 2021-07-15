@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/joannisbs/training-binary-mask-detection-js#readme",
   "dependencies": {
+    "@tensorflow-models/knn-classifier": "^1.2.2",
+    "@tensorflow-models/mobilenet": "^2.1.0",
     "@tensorflow/tfjs-node": "^3.8.0",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "canvas": "^2.8.0"
   }
 }
