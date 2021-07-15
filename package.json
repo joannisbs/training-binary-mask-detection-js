@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/joannisbs/training-binary-mask-detection-js#readme",
   "dependencies": {
+    "@tensorflow/tfjs-node": "^3.8.0",
     "axios": "^0.21.1"
   }
 }
