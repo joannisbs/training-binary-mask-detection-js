@@ -16,6 +16,7 @@
   
   const tf = require('@tensorflow/tfjs-node');
 
+  // mobilenet transforma imagem em vetor
   const mobilenetModule = require('@tensorflow-models/mobilenet');
   const knnClassifier = require('@tensorflow-models/knn-classifier');
   
@@ -23,13 +24,18 @@
 
   const fs = require('fs')
   
+  // readsync ele lista todos os nomes dos arquivos no diretorio
   const filesMask = fs.readdirSync('with_mask');
   const filesFace = fs.readdirSync('without_mask');
+
+  // para ler arquivo de testo use fs.readFileSync
+  
   
   let trainingImageContainer = [];
   let testImageContainer = [];
   
   // Load mobilenet.
+  // carrega modeloComputacional do google que é capaz de trasnformar uma imagem em tensor.
   const mobilenet = await mobilenetModule.load();
 
   const { Image, createCanvas } = require('canvas');
@@ -41,31 +47,47 @@
       var img = new Image()
       img.onload = () => ctx.drawImage(img, 0, 0);
       img.onerror = err => { throw err };
+
+      // aqui que a mágica acontece
       img.src = dir + '/' + filename;
       // console.log(img.src)
+
+      // colocando a imagem no canvas e transformando em pixels
       image = tf.browser.fromPixels(canvas);
-      return image;
+      return image; // retorna imagem em pixels
     } catch (err) {
       console.log('erro em abrir e pré-processar a imagem', err);
     }
   }
   
+
+  // retorna um numero aleatorio inteiro entre o minimo e o o maximo
   function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
   }
+
+
   console.time('preprocessingMask')
   console.log('preprocessing')
   let count = 0;
   for  (file of filesMask) {
     // console.log(`verbose: ${count++} of ${filesMask.length}`)
     // const file = filesMask[index];
+
+    // abrindo a imagem em pixels
     const imageLoaded = await loadLocalImageAndPreprocessing('with_mask', file);
     
     const randomNumber = getRandomInt(0, 100);
     if(randomNumber % 7 < 5){
-      trainingImageContainer.push({ image: imageLoaded, class: 1 , imageName: file, path: 'with_mask'});
+      trainingImageContainer.push(
+        { 
+          image: imageLoaded, 
+          class: 1 , 
+          imageName: file, 
+          path: 'with_mask'
+      });
     }else{
       testImageContainer.push({ image: imageLoaded, class: 1 , imageName: file, path: 'with_mask'})
     }
@@ -92,6 +114,7 @@
   console.log('embaralhando')
   console.time('embaralhando')
 
+  // embaralhando array
   trainingImageContainer = shuffle(trainingImageContainer)
   testImageContainer = shuffle(testImageContainer)
 
@@ -153,8 +176,10 @@
     console.log(erro)
   })
 
+
+  // escreve um arquivo 
   async function makeFile(json) {
-    await fs.writeFileSync("test2.json", json)
+    await fs.writeFileSync("test-3.json", json)
   }
 
 
@@ -200,6 +225,15 @@ function shuffle(array) {
   return array;
 }
 
+// script main 
 
 
+// utilitarios 
+// suflle random etc
+
+// formatação de entrada dos dados, Imagem 
+
+// um cara para o modelo 
+
+// monta os setups de traino e teste
 
