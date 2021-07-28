@@ -22,5 +22,6 @@ class SettingData {
         });
       });
     })
+    return this.dataSet;
   }
 }
