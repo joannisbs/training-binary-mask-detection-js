@@ -1,11 +1,11 @@
 // generico, usa treds comuns, eh mais lento
 // instalar antes de descometar essa linha
-// npm install @tensorflow/tfjs 
+// npm install @tensorflow/tfjs
 // const tf = require('@tensorflow/tfjs');
 
 // Para rodar na placa de video
 // instalar antes de descomentar essa linha
-// npm install @tensorflow/tfjs-node-gpu 
+// npm install @tensorflow/tfjs-node-gpu
 // const tf = require('@tensorflow/tfjs-node-gpu');
 
 // Usando binarios de c no kernel - only linux
@@ -13,27 +13,27 @@
 
 (async() => {
 
-  
+
   const tf = require('@tensorflow/tfjs-node');
 
   // mobilenet transforma imagem em vetor
   const mobilenetModule = require('@tensorflow-models/mobilenet');
   const knnClassifier = require('@tensorflow-models/knn-classifier');
-  
+
   const classifier = knnClassifier.create();
 
   const fs = require('fs')
-  
+
   // readsync ele lista todos os nomes dos arquivos no diretorio
   const filesMask = fs.readdirSync('with_mask');
   const filesFace = fs.readdirSync('without_mask');
 
   // para ler arquivo de testo use fs.readFileSync
-  
-  
+
+
   let trainingImageContainer = [];
   let testImageContainer = [];
-  
+
   // Load mobilenet.
   // carrega modeloComputacional do google que é capaz de trasnformar uma imagem em tensor.
   const mobilenet = await mobilenetModule.load();
@@ -41,7 +41,7 @@
   const { Image, createCanvas } = require('canvas');
   const canvas = createCanvas(800, 600);
   const ctx = canvas.getContext('2d');
-  
+
   async function loadLocalImageAndPreprocessing(dir, filename) {
     try {
       var img = new Image()
@@ -59,7 +59,7 @@
       console.log('erro em abrir e pré-processar a imagem', err);
     }
   }
-  
+
 
   // retorna um numero aleatorio inteiro entre o minimo e o o maximo
   function getRandomInt(min, max) {
@@ -78,14 +78,14 @@
 
     // abrindo a imagem em pixels
     const imageLoaded = await loadLocalImageAndPreprocessing('with_mask', file);
-    
+
     const randomNumber = getRandomInt(0, 100);
     if(randomNumber % 7 < 5){
       trainingImageContainer.push(
-        { 
-          image: imageLoaded, 
-          class: 1 , 
-          imageName: file, 
+        {
+          image: imageLoaded,
+          class: 1 ,
+          imageName: file,
           path: 'with_mask'
       });
     }else{
@@ -94,13 +94,13 @@
   }
   console.timeEnd('preprocessingMask')
   console.time('preprocessingFace')
-  
+
   count = 0;
   for (file of filesFace) {
     // console.log(`verbose: ${count++} of ${filesFace.length}`)
     // const file = filesFace[index];
     const imageLoaded = await loadLocalImageAndPreprocessing('without_mask', file);
-    
+
     const randomNumber = getRandomInt(0, 100);
     if(randomNumber % 7 < 5){
       trainingImageContainer.push({ image: imageLoaded, class: 0 , imageName: file, path: 'without_mask'});
@@ -108,7 +108,7 @@
       testImageContainer.push({ image: imageLoaded, class: 0 , imageName: file, path: 'without_mask' })
     }
   }
-  
+
   console.timeEnd('preprocessingFace')
 
   console.log('embaralhando')
@@ -134,22 +134,22 @@
     const modelLoaded = mobilenet.infer( set.image, 'conv_preds');
     classifier.addExample(modelLoaded, set.class);
   }
-  
+
   console.timeEnd('training')
-  
+
   console.time('predictions')
   console.log('predictions')
-  
+
   const resultsTrue = []
   const resultsFalse = []
 
   count = 0;
-  
+
   for(test of testImageContainer){
     // console.log(`verbose: ${count++} of ${testImageContainer.length}`)
     const modeledimage = mobilenet.infer( test.image, 'conv_preds');
     const predict = await classifier.predictClass(modeledimage);
-    
+
 
     if(predict.label == String(test.class)){
       resultsTrue.push({predict, class: test.class});
@@ -160,13 +160,13 @@
   }
 
   console.log(`montante de treino ${trainingImageContainer.length}`)
-  
+
   console.log(`acertos: ${resultsTrue.length} de ${testImageContainer.length}` +
   `- ${resultsTrue.length/ testImageContainer.length}%`)
 
   console.log(`erros: ${resultsFalse.length} de ${testImageContainer.length} ` +
   `- ${resultsFalse.length/ testImageContainer.length}%`)
-  
+
 
   console.timeEnd('predictions')
 
@@ -177,7 +177,7 @@
   })
 
 
-  // escreve um arquivo 
+  // escreve um arquivo
   async function makeFile(json) {
     await fs.writeFileSync("test-3.json", json)
   }
@@ -202,7 +202,7 @@
   await makeFile(jsonData);
 
 
-  
+
 })()
 
 
@@ -225,15 +225,15 @@ function shuffle(array) {
   return array;
 }
 
-// script main 
+// script main
 
 
-// utilitarios 
+// utilitarios
 // suflle random etc
 
-// formatação de entrada dos dados, Imagem 
+// formatação de entrada dos dados, Imagem
 
-// um cara para o modelo 
+// um cara para o modelo
 
 // monta os setups de traino e teste
 

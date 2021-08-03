@@ -4,6 +4,7 @@ class SettingData {
   reader = undefined;
   tags = [];
   dataSet = [];
+  
 	constructor(reader){
     this.reader = reader;
   }
@@ -17,7 +18,7 @@ class SettingData {
       const fileNames = fs.readdirSync(tag.path);
       fileNames.forEach(fileName => {
         this.dataSet.push({
-          data: this.reader(tag.path, fileName),
+          data: this.reader.loadLocalImageAndPreprocessing(tag.path, fileName),
           class: tag.class,
         });
       });
@@ -25,3 +26,5 @@ class SettingData {
     return this.dataSet;
   }
 }
+
+module.exports = SettingData;

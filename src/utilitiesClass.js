@@ -1,4 +1,5 @@
 
+const fs = require('fs')
 class Utilities {
   shuffle(array) {
     let index_i = array.length, index_j, index_k;
@@ -22,6 +23,12 @@ class Utilities {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  // escreve um arquivo
+  async makeJsonFile(json, fileName) {
+    await fs.writeFileSync(fileName + ".json", json)
+    console.log('arquivo criado?')
   }
 
 }

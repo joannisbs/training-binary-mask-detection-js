@@ -76,6 +76,8 @@
   console.log('preprocessing')
   let count = 0;
   for  (file of filesMask) {
+    count++;
+    if (count > 3)break
     // console.log(`verbose: ${count++} of ${filesMask.length}`)
     // const file = filesMask[index];
     const imageLoaded = await loadLocalImageAndPreprocessing('with_mask', file);
@@ -92,6 +94,8 @@
   
   count = 0;
   for (file of filesFace) {
+    count++;
+    if (count > 3)break
     // console.log(`verbose: ${count++} of ${filesFace.length}`)
     // const file = filesFace[index];
     const imageLoaded = await loadLocalImageAndPreprocessing('without_mask', file);
@@ -142,6 +146,7 @@
   for(test of testImageContainer){
     // console.log(`verbose: ${count++} of ${testImageContainer.length}`)
     const modeledimage = mobilenet.infer( test.image, 'conv_preds');
+    console.log(modeledimage)
     const predict = await classifier.predictClass(modeledimage);
     
 

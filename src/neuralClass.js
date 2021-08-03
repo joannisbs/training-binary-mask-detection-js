@@ -1,4 +1,4 @@
-const tf = require('@tensorflow/tfjs-node');
+
 
 // mobilenet transforma imagem em vetor
 const mobilenetModule = require('@tensorflow-models/mobilenet');
@@ -6,12 +6,15 @@ const knnClassifier = require('@tensorflow-models/knn-classifier');
 
 
 
-class NeuralClassForImage {
+class NeuralKnnClassForImage {
   classifier = undefined;
   mobilenet = undefined;
   
-  async constructor () {
+  constructor () {
     this.classifier = knnClassifier.create();
+  }
+  
+  async setup(){
     this.mobilenet = await mobilenetModule.load();
   }
 
@@ -25,16 +28,21 @@ class NeuralClassForImage {
 
 
   async addExempleToModel(tensor, className) {
-    await classifier.addExample(tensor, className);
+    if(tensor){
+      const modelLoaded = await this.mobilenet.infer( tensor, 'conv_preds');
+      await this.classifier.addExample(modelLoaded, className);
+    }else{
+      console.log('ue')
+    }
   }
 
   async predictTensor(tensor) {
-    return await classifier.predictClass(tensor);
+    return await this.classifier.predictClass(tensor);
   }
 
 
   async getModel() {
-    const dataset = await classifier.getClassifierDataset();
+    const dataset = await this.classifier.getClassifierDataset();
 
     let datasetObj = {}
     Object.keys(dataset).forEach((key) => {
@@ -47,4 +55,7 @@ class NeuralClassForImage {
     return jsonData;
   }
 }
+
+module.exports = NeuralKnnClassForImage;
+
 
